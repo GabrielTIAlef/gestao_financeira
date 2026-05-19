@@ -74,17 +74,23 @@ Todo o processo de ETL foi feito com Python, utilizando estrutura modular e arqu
 
 ---
 
-# Diferenciais Técnicos
-   
-- Estrutura de staging layer
-- Controle de batch e auditoria
-- Rastreabilidade completa das cargas
-- UPSERT automatizado com ON CONFLICT
-- Modelagem Snowflake
-- Views SQL otimizadas para BI
-- Dimensão tempo central compartilhada
-- Pipeline preparado para automação
-- Estrutura preparada para crescimento do volume de dados 
+# Decisões Técnicas
+
+## Uso de Staging Layer
+
+A camada staging foi implementada para separar os dados brutos do modelo analítico, permitindo maior controle sobre qualidade, rastreabilidade e reprocessamento.
+
+## Controle de Batch
+
+Cada execução gera um batch_id único e timestamp de carga, permitindo auditoria completa e versionamento das cargas.
+
+## UPSERT Automatizado
+
+Foi utilizada estratégia de UPSERT com ON CONFLICT para evitar duplicidade de registros e garantir atualização incremental eficiente.
+
+## Modelagem Snowflake
+
+A modelagem dimensional foi estruturada em esquema Snowflake visando organização, escalabilidade e clareza analítica. 
 
 ---
 
