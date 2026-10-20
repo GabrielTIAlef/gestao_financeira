@@ -1,0 +1,40 @@
+"""Mapeamento fechado entre o contrato Excel e o modelo dimensional."""
+# coluna natural, tabela, chave substituta, atributo natural
+DIMENSIONS = {
+    'Cliente': ('dim_cliente', 'cliente_id', 'cliente'),
+    'Unidade_Negocio': ('dim_unidade_negocio', 'unidade_negocio_id', 'unidade_negocio'),
+    'Tipo_Contrato': ('dim_tipo_contrato', 'tipo_contrato_id', 'tipo_contrato'),
+    'Categoria': ('dim_categoria', 'categoria_id', 'categoria'),
+    'Tipo_Despesa': ('dim_tipo_despesa', 'tipo_despesa_id', 'tipo_despesa'),
+    'Centro_Custo': ('dim_centro_custo', 'centro_custo_id', 'centro_custo'),
+    'Status': ('dim_status', 'status_id', 'status'),
+    'Tipo': ('dim_tipo_orcamento', 'tipo_orcamento_id', 'tipo'),
+}
+# fonte -> coluna do fato. Datas usam dim_tempo; demais dimensões usam o mapa acima.
+FACTS = {
+    'Faturamento': {'table': 'fato_faturamento',
+        'ids': {'ID_Lancamento': 'id_lancamento'},
+        'dimensions': {'Data_Competencia': 'data_id', 'Cliente': 'cliente_id',
+                       'Unidade_Negocio': 'unidade_negocio_id', 'Tipo_Contrato': 'tipo_contrato_id'},
+        'measures': {'Receita_Bruta': 'receita_bruta', 'Impostos': 'impostos', 'Receita_Liquida': 'receita_liquida'},
+        'keys': ('id_lancamento',)},
+    'Custos_Despesas': {'table': 'fato_custos_despesas',
+        'ids': {'ID_Lancamento': 'id_lancamento'},
+        'dimensions': {'Data_Competencia': 'data_id', 'Categoria': 'categoria_id',
+                       'Tipo_Despesa': 'tipo_despesa_id', 'Centro_Custo': 'centro_custo_id'},
+        'measures': {'Valor': 'valor'}, 'keys': ('id_lancamento',)},
+    'Orcamento': {'table': 'fato_orcamento', 'ids': {},
+        'dimensions': {'Data_Competencia': 'data_id', 'Tipo': 'tipo_orcamento_id',
+                       'Unidade_Negocio': 'unidade_negocio_id'},
+        'measures': {'Valor_Orcado': 'valor_orcado'},
+        'keys': ('data_id', 'tipo_orcamento_id', 'unidade_negocio_id')},
+    'Contas_Receber': {'table': 'fato_contas_receber', 'ids': {'ID_Titulo': 'id_titulo'},
+        'dimensions': {'Cliente': 'cliente_id', 'Data_Emissao': 'data_emissao_id',
+                       'Data_Vencimento': 'data_vencimento_id', 'Status': 'status_id'},
+        'measures': {'Valor': 'valor', 'Dias_Atraso': 'dias_atraso'}, 'keys': ('id_titulo',)},
+    'Metas_Negocio': {'table': 'fato_metas_negocio', 'ids': {},
+        'dimensions': {'Data_Competencia': 'data_id', 'Unidade_Negocio': 'unidade_negocio_id'},
+        'measures': {'Margem_Meta': 'margem_meta', 'Crescimento_Meta': 'crescimento_meta',
+                     'Ticket_Medio_Meta': 'ticket_medio_meta'},
+        'keys': ('data_id', 'unidade_negocio_id')},
+}
