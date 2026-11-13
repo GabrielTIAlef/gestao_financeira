@@ -1,13 +1,16 @@
 # Gestão Financeira — Business Intelligence e ETL dimensional
 
-Pipeline financeiro em **Python, pandas, SQLAlchemy e PostgreSQL** que lê cinco
-abas Excel, valida chaves e valores e publica um modelo dimensional com
-**nove dimensões e cinco fatos**. Inclui dados fictícios, DDL versionado,
-reconciliação financeira e testes de falhas com banco real.
+Faturamento, custos, orçamento, recebíveis e metas precisam manter seu significado
+ao serem reunidos para análise. Este projeto apresenta minha experiência
+com **ETL, modelagem dimensional e BI financeiro**, da preparação das fontes
+à organização de informações para acompanhamento da operação.
 
-O projeto reúne a experiência original de Business Intelligence financeiro e uma
-versão pública profissionalizada para avaliação técnica. Não exige arquivos ou
-bancos de uma empresa para executar a demonstração.
+O caso conecta necessidades de gestão, dashboards e indicadores da experiência
+original às decisões verificáveis no código público. A demonstração fictícia
+permite examinar chaves, cargas e reconciliação sem utilizar arquivos da empresa.
+
+**O principal ponto de avaliação:** como preservo o significado de cada
+lançamento ao transformar planilhas em fatos e dimensões para análise.
 
 ## Contexto e propósito do projeto original
 
@@ -20,6 +23,25 @@ O trabalho abordou o monitoramento da saúde financeira, a análise temporal dos
 indicadores, o controle de custos e despesas e a comparação entre realizado e
 orçado. A separação entre origem, tratamento e consumo analítico buscava
 organizar uma base que pudesse evoluir com as necessidades do negócio.
+
+## Da necessidade financeira às decisões de dados
+
+Minha atuação apresentada neste caso reúne preparação das informações,
+organização do modelo analítico e contextualização dos indicadores para BI.
+A implementação pública detalha como essas responsabilidades se traduzem em
+regras de carga.
+
+| Pergunta ou dificuldade | Abordagem adotada | Competência observável |
+| --- | --- | --- |
+| Como analisar áreas financeiras relacionadas sem misturar suas granularidades? | Separar cinco fatos e compartilhar dimensões | Modelagem dimensional e entendimento do nível de detalhe |
+| Dois lançamentos iguais em data, cliente e valor são necessariamente duplicados? | Preservar IDs distintos e rejeitar duplicatas ambíguas | Definição de chaves de negócio e integridade financeira |
+| Como atualizar um título quando seu saldo ou status muda? | Usar ID estável e UPSERT, sem incluir valor na identidade | Ciclo de vida de recebíveis e atualização consistente |
+| Como saber se a transformação preservou os valores? | Reconciliar contagens e totais após joins e cargas | SQL, precisão monetária e validação dos resultados |
+
+O [modelo](docs/MODELAGEM.md), o [contrato das abas](docs/CONTRATO_DADOS.md)
+e a [carga dimensional](src/warehouse.py) permitem acompanhar esse raciocínio.
+As regras públicas são demonstrativas; as regras contábeis privadas não foram
+recriadas a partir da amostra.
 
 ### Tecnologias e componentes da solução original
 
@@ -133,6 +155,9 @@ O modelo é uma **constelação de fatos com dimensões compartilhadas**.
 Consulte o [contrato das abas](docs/CONTRATO_DADOS.md) e a
 [modelagem](docs/MODELAGEM.md) para campos, granularidade e relacionamentos.
 
+<details>
+<summary>Reproduzir o fluxo Excel → PostgreSQL e conferir os totais</summary>
+
 ## Demonstração reproduzível
 
 Roteiro validado no Windows com Python 3.12.14 e PostgreSQL 18.6. Na raiz do
@@ -167,6 +192,8 @@ automático no script.
 Totais esperados da amostra: receita bruta **170.00**, impostos **17.00**,
 receita líquida **153.00**, custos **35.30**, orçamento **250.00** e títulos **200.20**.
 Esses números são fictícios, não resultados de uma operação real.
+
+</details>
 
 ## Confiabilidade e testes
 
